@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BharatTube - India's Own Video Platform</title>
+    <style>
+        :root {
+            --primary-orange: #FF7F24;
+            --primary-purple: #8A2BE2;
+            --primary-blue: #1E90FF;
+            --primary-green: #2E8B57;
+            --dark-bg: #1A1A1A;
+            --light-bg: #FFFFFF;
+            --text-dark: #333333;
+            --text-light: #F5F5F5;
+            --card-bg: #F8F8F8;
+            --card-dark: #2D2D2D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+
+        body.dark-theme {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-purple));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            font-size: 2.2rem;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            border: none;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-purple);
+            font-size: 1.2rem;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-actions button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-actions .profile {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .language-selector {
+            position: relative;
+            display: inline-block;
+        }
+
+        .language-selector select {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--text-dark);
+        }
+
+        .main-container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 240px;
+            padding: 1.5rem 1rem;
+            background-color: var(--light-bg);
+            height: calc(100vh - 80px);
+            position: sticky;
+            top: 80px;
+            overflow-y: auto;
+        }
+
+        body.dark-theme .sidebar {
+            background-color: var(--dark-bg);
+        }
+
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-section h3 {
+            font-size: 1rem;
+            color: var(--primary-purple);
+            margin-bottom: 0.8rem;
+            padding-left: 0.5rem;
+        }
+
+        body.dark-theme .sidebar-section h3 {
+            color: var(--primary-blue);
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 0.3rem;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(138, 43, 226, 0.1);
+        }
+
+        body.dark-theme .sidebar-item:hover {
+            background-color: rgba(30, 144, 255, 0.1);
+        }
+
+        .sidebar-item.active {
+            background-color: rgba(138, 43, 226, 0.2);
+            font-weight: 500;
+        }
+
+        body.dark-theme .sidebar-item.active {
+            background-color: rgba(30, 144, 255, 0.2);
+        }
+
+        .sidebar-item i {
+            font-size: 1.2rem;
+            color: var(--primary-purple);
+        }
+
+        body.dark-theme .sidebar-item i {
+            color: var(--primary-blue);
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .video-categories {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .category-chip {
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            background-color: var(--card-bg);
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        body.dark-theme .category-chip {
+            background-color: var(--card-dark);
+        }
+
+        .category-chip.active {
+            background-color: var(--primary-purple);
+            color: white;
+        }
+
+        body.dark-theme .category-chip.active {
+            background-color: var(--primary-blue);
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.4rem;
+            color: var(--primary-orange);
+        }
+
+        .section-title a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        body.dark-theme .section-title a {
+            color: var(--primary-blue);
+        }
+
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .video-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        body.dark-theme .video-card {
+            background-color: var(--card-dark);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .thumbnail {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+        }
+
+        .thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .video-info {
+            padding: 0.8rem;
+        }
+
+        .video-title {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .channel-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #555;
+        }
+
+        body.dark-theme .channel-icon {
+            background-color: #444;
+            color: #ddd;
+        }
+
+        .channel-name {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            opacity: 0.8;
+        }
+
+        body.dark-theme .channel-name {
+            color: var(--text-light);
+        }
+
+        .video-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            opacity: 0.7;
+        }
+
+        body.dark-theme .video-stats {
+            color: var(--text-light);
+        }
+
+        .shorts-section {
+            margin: 2rem 0;
+        }
+
+        .shorts-container {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .short-card {
+            min-width: 150px;
+            width: 150px;
+            cursor: pointer;
+        }
+
+        .short-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-top: 177.78%; /* 9:16 aspect ratio */
+            overflow: hidden;
+            border-radius: 10px;
+            background-color: var(--card-bg);
+        }
+
+        body.dark-theme .short-thumbnail {
+            background-color: var(--card-dark);
+        }
+
+        .short-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .short-title {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .short-views {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            opacity: 0.7;
+            margin-top: 0.3rem;
+        }
+
+        body.dark-theme .short-views {
+            color: var(--text-light);
+        }
+
+        .trending-banner {
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .trending-banner h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .trending-banner p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .trending-banner button {
+            background-color: white;
+            color: var(--primary-blue);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .trending-banner button:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+                padding: 1rem 0.5rem;
+            }
+            .sidebar-item span {
+                display: none;
+            }
+            .sidebar-item {
+                justify-content: center;
+                padding: 0.8rem 0;
+            }
+            .sidebar-section h3 {
+                text-align: center;
+                padding-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                margin: 0 1rem;
+            }
+            .user-actions {
+                gap: 1rem;
+            }
+            .content {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                padding: 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .search-bar {
+                margin: 0 0.5rem;
+            }
+            .search-bar input {
+                padding: 0.6rem 1rem;
+            }
+            .user-actions button:not(.profile, .theme-toggle) {
+                display: none;
+            }
+            .sidebar {
+                display: none;
+            }
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="logo-icon"><i class="fas fa-play-circle"></i></span>
+            <span>BharatTube</span>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search videos, channels, or categories...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+        <div class="user-actions">
+            <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+            <div class="language-selector">
+                <select id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="ta">தமிழ்</option>
+                    <option value="te">తెలుగు</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="mr">मराठी</option>
+                    <option value="gu">ગુજરાતી</option>
+                </select>
+            </div>
+            <button><i class="fas fa-video"></i></button>
+            <button><i class="fas fa-bell"></i></button>
+            <div class="profile">A</div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>Menu</h3>
+                <div class="sidebar-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-compass"></i>
+                    <span>Explore</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-fire"></i>
+                    <span>Trending</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-subscript"></i>
+                    <span>Subscriptions</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Categories</h3>
+                <div class="sidebar-item">
+                    <i class="fas fa-film"></i>
+                    <span>Entertainment</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-book"></i>
+                    <span>Education</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-newspaper"></i>
+                    <span>News</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-pray"></i>
+                    <span>Devotional</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-utensils"></i>
+                    <span>Cooking</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-music"></i>
+                    <span>Music</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Your Content</h3>
+                <div class="sidebar-item">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Watch Later</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>Liked Videos</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Settings</h3>
+                <div class="sidebar-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="trending-banner">
+                <div>
+                    <h2>Trending Across India</h2>
+                    <p>Discover what's popular in your region and across the country</p>
+                </div>
+                <button>Explore Trends</button>
+            </div>
+
+            <div class="video-categories">
+                <div class="category-chip active">All</div>
+                <div class="category-chip">Music</div>
+                <div class="category-chip">Movies</div>
+                <div class="category-chip">Gaming</div>
+                <div class="category-chip">News</div>
+                <div class="category-chip">Live</div>
+                <div class="category-chip">Cooking</div>
+                <div class="category-chip">Recently Uploaded</div>
+                <div class="category-chip">Watched</div>
+                <div class="category-chip">New to you</div>
+            </div>
+
+            <div class="section-title">
+                <h2>Recommended For You</h2>
+                <a href="#">See all</a>
+            </div>
+
+            <div class="videos-grid">
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/7QRQjrsHFcg/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">12:34</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Traditional Indian Cooking: Butter Chicken Recipe</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">C</div>
+                            <span class="channel-name">Cooking with Culture</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>1.2M views</span>
+                            <span>3 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/V1bFr2SWP1I/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">8:45</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Learn Hindi in 30 Days - Day 1 | Free Hindi Course</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">L</div>
+                            <span class="channel-name">Learn Indian Languages</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>856K views</span>
+                            <span>1 week ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/J1W7W-lXWQY/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">22:10</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Mumbai Street Food Tour | Best Vada Pav &amp; Chai</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">F</div>
+                            <span class="channel-name">Food Explorer</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>3.4M views</span>
+                            <span>2 weeks ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/81LFwfOulLU/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">15:30</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Yoga for Beginners - Morning Routine</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">Y</div>
+                            <span class="channel-name">Yoga with Priya</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>2.1M views</span>
+                            <span>1 month ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h2>Trending Now</h2>
+                <a href="#">See all</a>
+            </div>
+
+            <div class="videos-grid">
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/9BD9yQlD0vA/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">5:20</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Latest Bollywood Dance Mashup 2023 | Trending Songs</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">B</div>
+                            <span class="channel-name">Bollywood Beats</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>8.7M views</span>
+                            <span>2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/3P1CnWI62Ik/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">18:45</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">India vs Australia Highlights | T20 World Cup</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">S</div>
+                            <span class="channel-name">Sports India</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>12.5M views</span>
+                            <span>1 day ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">10:15</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">DIY Home Decor Ideas with Indian Touch</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">H</div>
+                            <span class="channel-name">Home & Craft</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>1.9M views</span>
+                            <span>5 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/6ZZQ9JvZ5Lw/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">25:40</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Complete History of Indian Independence</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">H</div>
+                            <span class="channel-name">History of India</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>4.3M views</span>
+                            <span>3 weeks ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shorts-section">
+                <div class="section-title">
+                    <h2>BharatTube Shorts</h2>
+                    <a href="#">See all</a>
+                </div>
+                <div class="shorts-container">
+                    <div class="short-card">
+                        <div class="short-thumbnail">
+                            <img src="https://i.ytimg.com/vi/9BD9yQlD0vA/maxresdefault.jpg" alt="Short Thumbnail">
+                        </div>
+                        <h4 class="short-title">Quick Yoga for Office Workers</h4>
+                        <div class="short-views">1.2M views</div>
+                    </div>
+                    <div class="short-card">
+                        <div class="short-thumbnail">
+                            <img src="https://i.ytimg.com/vi/3P1CnWI62Ik/maxresdefault.jpg" alt="Short Thumbnail">
+                        </div>
+                        <h4 class="short-title">Street Food in Delhi</h4>
+                        <div class="short-views">3.4M views</div>
+                    </div>
+                    <div class="short-card">
+                        <div class="short-thumbnail">
+                            <img src="https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg" alt="Short Thumbnail">
+                        </div>
+                        <h4 class="short-title">5 Minute Mehndi Design</h4>
+                        <div class="short-views">2.8M views</div>
+                    </div>
+                    <div class="short-card">
+                        <div class="short-thumbnail">
+                            <img src="https://i.ytimg.com/vi/6ZZQ9JvZ5Lw/maxresdefault.jpg" alt="Short Thumbnail">
+                        </div>
+                        <h4 class="short-title">Indian Classical Dance</h4>
+                        <div class="short-views">1.7M views</div>
+                    </div>
+                    <div class="short-card">
+                        <div class="short-thumbnail">
+                            <img src="https://i.ytimg.com/vi/81LFwfOulLU/maxresdefault.jpg" alt="Short Thumbnail">
+                        </div>
+                        <h4 class="short-title">Quick Hindi Phrases</h4>
+                        <div class="short-views">956K views</div>
+                    </div>
+                    <div class="short-card">
+                        <div class="short-thumbnail">
+                            <img src="https://i.ytimg.com/vi/J1W7W-lXWQY/maxresdefault.jpg" alt="Short Thumbnail">
+                        </div>
+                        <h4 class="short-title">DIY Rakhi Making</h4>
+                        <div class="short-views">1.5M views</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h2>Popular in Your Region</h2>
+                <a href="#">See all</a>
+            </div>
+
+            <div class="videos-grid">
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/7QRQjrsHFcg/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">14:25</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Local Festival Celebrations in Your City</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">L</div>
+                            <span class="channel-name">Local Events</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>245K views</span>
+                            <span>4 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/V1bFr2SWP1I/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">7:50</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Best Places to Visit in Your State</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">T</div>
+                            <span class="channel-name">Travel Guide</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>189K views</span>
+                            <span>1 week ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/J1W7W-lXWQY/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">11:30</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Regional Language News Updates</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">N</div>
+                            <span class="channel-name">Local News</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>320K views</span>
+                            <span>1 day ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <img src="https://i.ytimg.com/vi/81LFwfOulLU/maxresdefault.jpg" alt="Video Thumbnail">
+                        <span class="duration">9:15</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Traditional Recipes from Your Region</h3>
+                        <div class="channel-info">
+                            <div class="channel-icon">F</div>
+                            <span class="channel-name">Local Flavors</span>
+                        </div>
+                        <div class="video-stats">
+                            <span>156K views</span>
+                            <span>2 weeks ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            if (document.body.classList.contains('dark-theme')) {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+
+        // Category chips active state
+        const categoryChips = document.querySelectorAll('.category-chip');
+        categoryChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                categoryChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+            });
+        });
+
+        // Sidebar items active state
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
+        // Language selector
+        const languageSelect = document.getElementById('languageSelect');
+        languageSelect.addEventListener('change', (e) => {
+            alert(`Language changed to ${e.target.options[e.target.selectedIndex].text}`);
+        });
+    </script>
+</body>
+</html>
